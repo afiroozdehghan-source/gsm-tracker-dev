@@ -87,7 +87,9 @@ def clear_all_fields():
 # فرم ثبت
 barcode = st.text_input("Scan Barcode (Place cursor here and scan)", key="barcode_input")
 activity = st.radio("Activity", ["Screen Test", "Repair", "Soak Test"], horizontal=True, key="activity_input")
-status = st.selectbox("Status", ["Started", "Passed", "Failed", "BER"], key="status_input")
+
+# وضعیت WIP اضافه شد
+status = st.selectbox("Status", ["Started", "WIP", "Passed", "Failed", "BER"], key="status_input")
 comment = st.text_input("Notes", key="notes_input")
 
 submit = st.button("Submit to Cloud", type="primary", on_click=clear_all_fields)
@@ -116,6 +118,7 @@ if submit:
                 st.error(f"❌ Error: Unit {target_barcode} is ALREADY ACTIVE in {existing_job.get('Project', 'a project')}!")
                 is_error = True
         else:
+            # این بخش هم برای Passed/Failed/BER و هم برای WIP کار می‌کند
             if not existing_job:
                 st.error(f"❌ CRITICAL ERROR: Unit {target_barcode} is not active. Start it first!")
                 is_error = True
@@ -133,14 +136,14 @@ if submit:
                 "Activity_Type": target_activity,  
                 "Status": target_status,          
                 "Technician_Comment": target_comment,
-                "Project": st.session_state["project"] # ارسال پروژه به کلود
+                "Project": st.session_state["project"] 
             }
             
             with st.spinner("Syncing..."):
                 try:
                     response = requests.post(WEBAPP_URL, json=payload, timeout=10)
                     if response.status_code == 200:
-                        st.session_state["success_msg"] = f"✅ Success! Unit: {target_barcode} ({target_activity})"
+                        st.session_state["success_msg"] = f"✅ Success! Unit: {target_barcode} as {target_status}"
                         st.cache_data.clear() 
                         st.rerun()
                     else:
@@ -154,19 +157,16 @@ if submit:
 st.markdown("---")
 st.subheader("⏳ Live Workshop Monitor")
 
-# فیلتر کردن لیست برای نمایش
 if st.session_state["role"] == "admin":
     display_tasks = live_tasks
 else:
-    # فیلتر بر اساس پروژه کاربر
     display_tasks = [t for t in live_tasks if t.get("Project") == st.session_state["project"]]
 
 if not display_tasks:
     st.info(f"No active units for {st.session_state['project']} project.")
 else:
     df_display = pd.DataFrame(display_tasks)
-    # نمایش ستون‌ها با اضافه کردن Project برای ادمین‌ها
-    cols_to_show = ["Unit_Barcode", "Technician", "Project", "Activity_Type", "Start_Time"]
+    cols_to_show = ["Unit_Barcode", "Technician", "Project", "Activity_Type", "Start_Time", "Status"]
     df_display = df_display[cols_to_show]
-    df_display.columns = ["Unit Barcode", "Technician", "Project", "Current Activity", "Started At"]
+    df_display.columns = ["Unit Barcode", "Technician", "Project", "Activity", "Started At", "Last Status"]
     st.dataframe(df_display, use_container_width=True)
