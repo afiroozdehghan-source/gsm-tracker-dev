@@ -5,7 +5,7 @@ import pytz
 import pandas as pd
 
 # --- CONFIGURATION ---
-WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzsELZ5ilySgdnmFns1QjXAfuaL12UBadbOdklF1mkIiKsdYe8AL--uWO5rn2xaXJAMxg/exec" 
+WEBAPP_URL = "https://script.google.com/macros/s/AKfycbymKPj8e96P5dn5R2Aup9rfgKeRWBT1SelO7ANQiX2tRm4xiCEv96uC4HmbrhjSJErpaw/exec" 
 
 USER_CREDENTIALS = {
     "alireza": "admin2026",
