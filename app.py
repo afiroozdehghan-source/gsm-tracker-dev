@@ -9,17 +9,17 @@ WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyCGq2smaWEEP3rMGNtLRVi3Ye
 
 # ساختار اطلاعات کاربران و پروژه‌ها
 USER_DATA = {
-    "alireza": {"password": "admin2026", "project": "All", "role": "admin"},
-    "john": {"password": "admin123", "project": "All", "role": "admin"},
+    "alireza": {"password": "admin2026", "project": "Vodacom", "role": "admin"},
+    "john": {"password": "admin123", "project": "Vodacom", "role": "admin"},
     "keno": {"password": "keno123", "project": "Vodacom", "role": "tech"},
     "pitse": {"password": "pitse123", "project": "Vodacom", "role": "tech"},
     "tshidiso": {"password": "tshidiso123", "project": "Vodacom", "role": "tech"},
     "thabang": {"password": "thabang123", "project": "Vodacom", "role": "tech"},
     "khanyisani": {"password": "khanyisani123", "project": "Vodacom", "role": "tech"},
     "tshepo": {"password": "tshepo123", "project": "Vodacom", "role": "tech"},
-    "dennis": {"password": "dennis123", "project": "Vodacom", "role": "tech"},
-    "terrence": {"password": "terrence123", "project": "Vodacom", "role": "tech"},
-    "malcom": {"password": "malcom123", "project": "Vodacom", "role": "tech"},
+    "dennis": {"password": "dennis123", "project": "Vodacom", "role": "admin"},
+    "terrence": {"password": "terrence123", "project": "Vodacom", "role": "admin"},
+    "malcom": {"password": "malcom123", "project": "Vodacom", "role": "admin"},
     "thabiso": {"password": "thabiso123", "project": "Infinity", "role": "tech"},
     "tiisetso": {"password": "tiisetso123", "project": "Infinity", "role": "tech"}
 }
