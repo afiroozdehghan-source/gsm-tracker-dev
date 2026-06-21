@@ -63,7 +63,6 @@ live_tasks = fetch_live_buffer(WEBAPP_URL)
 st.title("📶 GSM Systems Tracker")
 st.write(f"User: **{st.session_state['username'].capitalize()}** | Project: **{st.session_state['project']}**")
 
-# مدیریت حافظه فیلدها
 if "barcode_input" not in st.session_state:
     st.session_state["barcode_input"] = ""
 if "activity_input" not in st.session_state:
@@ -87,8 +86,6 @@ def clear_all_fields():
 # فرم ثبت
 barcode = st.text_input("Scan Barcode (Place cursor here and scan)", key="barcode_input")
 activity = st.radio("Activity", ["Screen Test", "Repair", "Soak Test"], horizontal=True, key="activity_input")
-
-# وضعیت WIP اضافه شد
 status = st.selectbox("Status", ["Started", "WIP", "Passed", "Failed", "BER"], key="status_input")
 comment = st.text_input("Notes", key="notes_input")
 
@@ -110,15 +107,13 @@ if submit:
         current_tech = st.session_state["username"].capitalize()
         is_error = False
         
-        # چک کردن کارهای فعال (بر اساس پروژه)
         existing_job = next((item for item in live_tasks if str(item.get("Unit_Barcode", "")).upper().strip() == target_barcode), None)
         
         if target_status == "Started":
             if existing_job:
-                st.error(f"❌ Error: Unit {target_barcode} is ALREADY ACTIVE in {existing_job.get('Project', 'a project')}!")
+                st.error(f"❌ Error: Unit {target_barcode} is ALREADY ACTIVE!")
                 is_error = True
         else:
-            # این بخش هم برای Passed/Failed/BER و هم برای WIP کار می‌کند
             if not existing_job:
                 st.error(f"❌ CRITICAL ERROR: Unit {target_barcode} is not active. Start it first!")
                 is_error = True
@@ -166,7 +161,17 @@ if not display_tasks:
     st.info(f"No active units for {st.session_state['project']} project.")
 else:
     df_display = pd.DataFrame(display_tasks)
-    cols_to_show = ["Unit_Barcode", "Technician", "Project", "Activity_Type", "Start_Time", "Status"]
-    df_display = df_display[cols_to_show]
-    df_display.columns = ["Unit Barcode", "Technician", "Project", "Activity", "Started At", "Last Status"]
-    st.dataframe(df_display, use_container_width=True)
+    
+    # تعریف ستون‌های مورد نظر
+    all_desired_cols = ["Unit_Barcode", "Technician", "Project", "Activity_Type", "Timestamp", "Status"]
+    
+    # فیلتر هوشمند ستون‌ها: فقط ستون‌هایی را انتخاب کن که در دیتای واقعی وجود دارند
+    available_cols = [c for c in all_desired_cols if c in df_display.columns]
+    
+    if available_cols:
+        df_display = df_display[available_cols]
+        # تغییر نام برای نمایش بهتر در UI
+        df_display.columns = [c.replace("_", " ") for c in df_display.columns]
+        st.dataframe(df_display, use_container_width=True)
+    else:
+        st.write("Data loaded but columns not recognized:", df_display.columns.tolist())
