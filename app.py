@@ -117,6 +117,10 @@ if submit:
             if not existing_job:
                 st.error(f"❌ CRITICAL ERROR: Unit {target_barcode} is not active. Start it first!")
                 is_error = True
+            # --- بخش اصلاح شده جهت بررسی مطابقت نوع فعالیت ---
+            elif str(existing_job.get("Activity_Type", "")).strip() != target_activity:
+                st.error(f"❌ CRITICAL ERROR: Unit {target_barcode} is active under '{existing_job.get('Activity_Type')}', but you selected '{target_activity}'!")
+                is_error = True
         
         if not is_error:
             sa_tz = pytz.timezone('Africa/Johannesburg')
